@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-user-edit" th:object="${user}">
+			<input name="userId"  type="hidden"  th:field="*{userId}" />
+			<div class="form-group">
+				<label class="col-sm-2 control-label ">登录名称：</label>
+				<div class="col-sm-9" >
+					<label class="control-label" th:text="*{loginName}"></label>
+				</div>
+			</div>
+			<div class="form-group" th:if="*{userType=='00'}">
+				<label class="col-sm-2 control-label">职称：</label>
+				<div class="col-sm-9">
+					<label class="control-label" th:text="*{jobtitle}"></label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">身份证号：</label>
+				<div class="col-sm-9">
+					<label class="control-label" th:text="*{cardnum}"></label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">用户头像：</label>
+				<div class="col-sm-9">
+					<input type="file" name="file" accept="image/*">
+					<img th:if="*{avatar != null and avatar!=''}" th:src="*{avatar}" width="50px" height="50px">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">用户名称：</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" name="userName" id="userName" th:field="*{userName}">
+				</div>
+				<label class="col-sm-3 control-label">性别：</label>
+				<div class="col-sm-3">
+					<select id="sex" name="sex"  class="form-control noselect2" th:with="type=${@dict.getType('sys_user_sex')}">
+						<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{sex}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">邮箱：</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" name="email" id="email" th:field="*{email}">
+				</div>
+				<label class="col-sm-3 control-label">手机：</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" name="phonenumber" id="phonenumber" th:field="*{phonenumber}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">地址：</label>
+				<div class="col-sm-9">
+					<input class="form-control" type="text" name="address" id="address" th:field="*{address}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">备注：</label>
+				<div class="col-sm-9">
+					<textarea class="form-control" type="text" name="remark" id="remark" th:field="*{remark}"></textarea>
+				</div>
+			</div>
+
+
+
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+	<script th:src="@{/ajax/libs/select/select2.js}"></script>
+	<script>
+        $("#form-user-edit").validate({
+        	rules:{
+        		userName:{
+        			required:true,
+        		},
+                college:{
+                    required:true
+                },
+        		email:{
+        			required:false,
+                    email:true,
+                    remote: {
+                        url: ctx + "system/user/checkEmailUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                        	"userId": function() {
+                                return $("#userId").val();
+                            },
+                			"email": function() {
+                                return $.common.trim($("#email").val());
+                            }
+                        },
+                        dataFilter: function (data, type) {
+                        	return $.validate.unique(data);
+                        }
+                    }
+        		},
+        		tel:{
+        			required:false,
+        			isPhone:true,
+                    remote: {
+                        url: ctx + "system/user/checkPhoneUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                        	"userId": function() {
+                        		return $("#userId").val();
+                            },
+                			"tel": function() {
+                                return $.common.trim($("#tel").val());
+                            }
+                        },
+                        dataFilter: function (data, type) {
+                        	return $.validate.unique(data);
+                        }
+                    }
+        		},
+        	},
+        	messages: {
+        		"email": {
+                    remote: "Email已经存在"
+                },
+        		"tel":{
+                	remote: "手机号码已经存在"
+        		}
+            }
+        });
+        
+        function submitHandler() {
+            $('#form-user-edit').submit();
+	    }
+
+        $.form.init({
+            url:ctx + "system/user/updateSelf",
+            beforeSubmit:function () {
+                return $.validate.form();
+            },
+            success:function (result) {
+                $.operate.successCallback(result);
+            }
+        });
+
+    </script>
+</body>
+</html>

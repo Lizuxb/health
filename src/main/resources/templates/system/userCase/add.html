@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-userCase-add">
+			<input id="userId" name="userId" class="form-control" th:value="${userId}" type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">病历内容：</label>
+				<div class="col-sm-8">
+					<textarea id="content" name="content" class="form-control" rows="6" ></textarea>
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script th:inline="javascript">
+		var prefix = ctx + "system/userCase"
+		$("#form-userCase-add").validate({
+			rules:{
+                content:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-userCase-add').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

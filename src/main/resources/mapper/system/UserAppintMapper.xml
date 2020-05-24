@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.system.mapper.UserAppintMapper">
+    
+    <resultMap type="UserAppint" id="UserAppintResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="doctorId"    column="doctor_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="doctorName"    column="doctor_name"    />
+        <result property="status"    column="status"    />
+        <result property="appointDate"    column="appoint_date"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectUserAppintVo">
+        select a.id, a.user_id, a.doctor_id, a.status, a.appoint_date, a.remark,
+        u.user_name,u2.user_name doctor_name
+        from user_appint a
+        left join sys_user u on a.user_id=u.user_id
+        left join sys_user u2 on a.doctor_id=u2.user_id
+    </sql>
+	
+    <select id="selectUserAppintList" parameterType="UserAppint" resultMap="UserAppintResult">
+        <include refid="selectUserAppintVo"/>
+        <where>  
+            <if test="id != null "> and a.id = #{id}</if>
+             <if test="userId != null "> and a.user_id = #{userId}</if>
+             <if test="doctorId != null "> and a.doctor_id = #{doctorId}</if>
+             <if test="status != null "> and a.status = #{status}</if>
+             <if test="appointDate != null "> and a.appoint_date = #{appointDate}</if>
+             <if test="remark != null  and remark != '' "> and a.remark = #{remark}</if>
+             <if test="userName != null  and userName != '' "> and u.user_name like concat('%',#{userName},'%')</if>
+             <if test="doctorName != null  and doctorName != '' "> and u2.user_name like concat('%',#{doctorName},'%')</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(a.appoint_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(a.appoint_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+    </select>
+    
+    <select id="selectUserAppintById" parameterType="Long" resultMap="UserAppintResult">
+        <include refid="selectUserAppintVo"/>
+        where a.id = #{id}
+    </select>
+        
+    <insert id="insertUserAppint" parameterType="UserAppint">
+        insert into user_appint
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="doctorId != null  ">doctor_id,</if>
+			<if test="status != null  ">status,</if>
+			<if test="appointDate != null  ">appoint_date,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="doctorId != null  ">#{doctorId},</if>
+			<if test="status != null  ">#{status},</if>
+			<if test="appointDate != null  ">#{appointDate},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateUserAppint" parameterType="UserAppint">
+        update user_appint
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="doctorId != null  ">doctor_id = #{doctorId},</if>
+            <if test="status != null  ">status = #{status},</if>
+            <if test="appointDate != null  ">appoint_date = #{appointDate},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteUserAppintById" parameterType="Long">
+        delete from user_appint where id = #{id}
+    </delete>
+	
+    <delete id="deleteUserAppintByIds" parameterType="String">
+        delete from user_appint where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

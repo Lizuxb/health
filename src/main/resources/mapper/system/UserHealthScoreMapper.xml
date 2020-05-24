@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.system.mapper.UserHealthScoreMapper">
+    
+    <resultMap type="UserHealthScore" id="UserHealthScoreResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="doctor"    column="doctor"    />
+        <result property="doctorName"    column="doctor_name"    />
+        <result property="neiKe"    column="nei_ke"    />
+        <result property="waiKe"    column="wai_ke"    />
+        <result property="yanKe"    column="yan_ke"    />
+        <result property="erBiHou"    column="er_bi_hou"    />
+        <result property="kouQiang"    column="kou_qiang"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+	
+	<sql id="selectUserHealthScoreVo">
+        select a.id, a.user_id, a.doctor, a.nei_ke, a.wai_ke, a.yan_ke, a.er_bi_hou, a.kou_qiang, a.remark,a.create_time,
+        u2.user_name doctor_name,u.user_name
+        from user_health_score a
+        left join sys_user u on a.user_id=u.user_id
+        left join sys_user u2 on a.doctor=u2.user_id
+    </sql>
+	
+    <select id="selectUserHealthScoreList" parameterType="UserHealthScore" resultMap="UserHealthScoreResult">
+        <include refid="selectUserHealthScoreVo"/>
+        <where>  
+            <if test="id != null "> and a.id = #{id}</if>
+             <if test="userId != null "> and a.user_id = #{userId}</if>
+             <if test="doctor != null "> and a.doctor = #{doctor}</if>
+             <if test="neiKe != null "> and a.nei_ke = #{neiKe}</if>
+             <if test="waiKe != null "> and a.wai_ke = #{waiKe}</if>
+             <if test="yanKe != null "> and a.yan_ke = #{yanKe}</if>
+             <if test="erBiHou != null "> and a.er_bi_hou = #{erBiHou}</if>
+             <if test="kouQiang != null "> and a.kou_qiang = #{kouQiang}</if>
+             <if test="remark != null  and remark != '' "> and a.remark = #{remark}</if>
+            <if test="doctorName != null  and doctorName != '' "> and u2.user_name like concat('%',#{doctorName},'%')</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(a.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(a.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+    </select>
+    
+    <select id="selectUserHealthScoreById" parameterType="Long" resultMap="UserHealthScoreResult">
+        <include refid="selectUserHealthScoreVo"/>
+        where a.id = #{id}
+    </select>
+        
+    <insert id="insertUserHealthScore" parameterType="UserHealthScore">
+        insert into user_health_score
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="doctor != null  ">doctor,</if>
+			<if test="neiKe != null  ">nei_ke,</if>
+			<if test="waiKe != null  ">wai_ke,</if>
+			<if test="yanKe != null  ">yan_ke,</if>
+			<if test="erBiHou != null  ">er_bi_hou,</if>
+			<if test="kouQiang != null  ">kou_qiang,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="doctor != null  ">#{doctor},</if>
+			<if test="neiKe != null  ">#{neiKe},</if>
+			<if test="waiKe != null  ">#{waiKe},</if>
+			<if test="yanKe != null  ">#{yanKe},</if>
+			<if test="erBiHou != null  ">#{erBiHou},</if>
+			<if test="kouQiang != null  ">#{kouQiang},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateUserHealthScore" parameterType="UserHealthScore">
+        update user_health_score
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="doctor != null  ">doctor = #{doctor},</if>
+            <if test="neiKe != null  ">nei_ke = #{neiKe},</if>
+            <if test="waiKe != null  ">wai_ke = #{waiKe},</if>
+            <if test="yanKe != null  ">yan_ke = #{yanKe},</if>
+            <if test="erBiHou != null  ">er_bi_hou = #{erBiHou},</if>
+            <if test="kouQiang != null  ">kou_qiang = #{kouQiang},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteUserHealthScoreById" parameterType="Long">
+        delete from user_health_score where id = #{id}
+    </delete>
+	
+    <delete id="deleteUserHealthScoreByIds" parameterType="String">
+        delete from user_health_score where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

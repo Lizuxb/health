@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-userCase-edit" th:object="${userCase}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">用户：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{userName}"></label>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">医生：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{doctorName}"></label>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">内容：</label>
+                <div class="col-sm-8">
+                    <textarea id="content" name="content" th:field="*{content}" class="form-control" rows="6"></textarea>
+                </div>
+            </div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script th:inline="javascript">
+		var prefix = ctx + "system/userCase"
+		$("#form-userCase-edit").validate({
+			rules:{
+                content:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-userCase-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

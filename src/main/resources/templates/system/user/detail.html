@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-user-edit" th:object="${user}">
+			<input name="userId"  type="hidden"  th:field="*{userId}" />
+			<div class="form-group">
+				<label class="col-sm-2 control-label ">登录名称：</label>
+				<div class="col-sm-9">
+					<label class="control-label" th:text="*{loginName}"></label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">用户名称：</label>
+				<div class="col-sm-3">
+					<label class="control-label" th:text="*{userName}"></label>
+				</div>
+				<label class="col-sm-3 control-label">性别：</label>
+				<div class="col-sm-3">
+					<label class="control-label" id="sex" th:text="*{sex}"></label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">邮箱：</label>
+				<div class="col-sm-3">
+					<label class="control-label" th:text="*{email}"></label>
+				</div>
+				<label class="col-sm-3 control-label">手机：</label>
+				<div class="col-sm-3">
+					<label class="control-label" th:text="*{phonenumber}"></label>
+				</div>
+			</div>
+			<div class="form-group" th:if="*{userType=='00'}">
+				<label class="col-sm-2 control-label">职称：</label>
+				<div class="col-sm-9">
+					<label class="control-label" id="jobtitle" th:text="*{jobtitle}"></label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">地址：</label>
+				<div class="col-sm-9">
+					<label class="control-label" id="address" th:text="*{address}"></label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">备注：</label>
+				<div class="col-sm-9">
+					<label class="control-label" th:text="*{remark}"></label>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+	<script th:inline="javascript">
+        var datas = [[${@dict.getType('sys_user_sex')}]];
+        $(function () {
+            $("#sex").html($.table.selectDictLabel(datas, $("#sex").html()));
+        });
+    </script>
+</body>
+</html>

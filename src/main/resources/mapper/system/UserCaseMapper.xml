@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.system.mapper.UserCaseMapper">
+    
+    <resultMap type="UserCase" id="UserCaseResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="doctorId"    column="doctor_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="doctorName"    column="doctor_name"    />
+        <result property="content"    column="content"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+	
+	<sql id="selectUserCaseVo">
+        select a.id, a.user_id, a.doctor_id, a.content, a.create_time,
+         u.user_name,u2.user_name doctor_name
+        from user_case a
+        left join sys_user u on a.user_id=u.user_id
+        left join sys_user u2 on a.doctor_id=u2.user_id
+    </sql>
+	
+    <select id="selectUserCaseList" parameterType="UserCase" resultMap="UserCaseResult">
+        <include refid="selectUserCaseVo"/>
+        <where>  
+            <if test="id != null "> and a.id = #{id}</if>
+             <if test="userId != null "> and a.user_id = #{userId}</if>
+             <if test="doctorId != null "> and a.doctor_id = #{doctorId}</if>
+             <if test="content != null  and content != '' "> and a.content = #{content}</if>
+             <if test="createTime != null "> and a.create_time = #{createTime}</if>
+            <if test="userName != null  and userName != '' "> and u.user_name like concat('%',#{userName},'%')</if>
+            <if test="doctorName != null  and doctorName != '' "> and u2.user_name like concat('%',#{doctorName},'%')</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(a.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(a.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+    </select>
+    
+    <select id="selectUserCaseById" parameterType="Long" resultMap="UserCaseResult">
+        <include refid="selectUserCaseVo"/>
+        where a.id = #{id}
+    </select>
+        
+    <insert id="insertUserCase" parameterType="UserCase">
+        insert into user_case
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="doctorId != null  ">doctor_id,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="createTime != null  ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="doctorId != null  ">#{doctorId},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateUserCase" parameterType="UserCase">
+        update user_case
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="doctorId != null  ">doctor_id = #{doctorId},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteUserCaseById" parameterType="Long">
+        delete from user_case where id = #{id}
+    </delete>
+	
+    <delete id="deleteUserCaseByIds" parameterType="String">
+        delete from user_case where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

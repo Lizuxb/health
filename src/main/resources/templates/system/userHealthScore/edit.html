@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-userHealthScore-edit" th:object="${userHealthScore}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">用户：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{userName}"></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">医生：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{doctorName}"></label>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">内科：</label>
+                <div class="col-sm-8">
+                    <input id="neiKe" name="neiKe" th:field="*{neiKe}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">外科：</label>
+                <div class="col-sm-8">
+                    <input id="waiKe" name="waiKe" th:field="*{waiKe}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">眼科：</label>
+                <div class="col-sm-8">
+                    <input id="yanKe" name="yanKe" th:field="*{yanKe}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">耳鼻喉：</label>
+                <div class="col-sm-8">
+                    <input id="erBiHou" name="erBiHou" th:field="*{erBiHou}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">口腔：</label>
+                <div class="col-sm-8">
+                    <input id="kouQiang" name="kouQiang" th:field="*{kouQiang}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">医生建议：</label>
+                <div class="col-sm-8">
+                    <textarea id="remark" name="remark" th:field="*{remark}" class="form-control"></textarea>
+                </div>
+            </div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script th:inline="javascript">
+		var prefix = ctx + "system/userHealthScore"
+		$("#form-userHealthScore-edit").validate({
+			rules:{
+                neiKe:{
+                    required:true,
+                    number:true
+                },waiKe:{
+                    required:true,
+                    number:true
+                },erBiHou:{
+                    required:true,
+                    number:true
+                },yanKe:{
+                    required:true,
+                    number:true
+                },kouQiang:{
+                    required:true,
+                    number:true
+                },remark:{
+                    required:true
+                }
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-userHealthScore-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.system.mapper.UserLogMapper">
+    
+    <resultMap type="UserLog" id="UserLogResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+	
+	<sql id="selectUserLogVo">
+        select a.id, a.user_id, a.title, a.content, a.create_time,u.user_name
+        from user_log a
+        left join sys_user u on a.user_id=u.user_id
+    </sql>
+	
+    <select id="selectUserLogList" parameterType="UserLog" resultMap="UserLogResult">
+        <include refid="selectUserLogVo"/>
+        <where>  
+            <if test="id != null "> and a.id = #{id}</if>
+             <if test="userId != null "> and a.user_id = #{userId}</if>
+             <if test="title != null  and title != '' "> and a.title like concat('%',#{title},'%') </if>
+             <if test="content != null  and content != '' "> and a.content = #{content}</if>
+             <if test="createTime != null "> and a.create_time = #{createTime}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(a.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(a.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+    </select>
+    
+    <select id="selectUserLogById" parameterType="Long" resultMap="UserLogResult">
+        <include refid="selectUserLogVo"/>
+        where a.id = #{id}
+    </select>
+        
+    <insert id="insertUserLog" parameterType="UserLog">
+        insert into user_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="title != null  and title != ''  ">title,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="createTime != null  ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="title != null  and title != ''  ">#{title},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateUserLog" parameterType="UserLog">
+        update user_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="title != null  and title != ''  ">title = #{title},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteUserLogById" parameterType="Long">
+        delete from user_log where id = #{id}
+    </delete>
+	
+    <delete id="deleteUserLogByIds" parameterType="String">
+        delete from user_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-userHealthScore-edit" th:object="${userHealthScore}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">用户：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{userName}"></label>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">医生：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{doctorName}"></label>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">内科：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{neiKe}"></label>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">外科：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{waiKe}"></label>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">眼科：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{yanKe}"></label>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">耳鼻喉：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{erBiHou}"></label>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">口腔：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{kouQiang}"></label>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">医生建议：</label>
+                <div class="col-sm-8">
+                    <label class="control-label" th:text="*{remark}"></label>
+                </div>
+            </div>
+		</form>
+    </div>
+</body>
+</html>
